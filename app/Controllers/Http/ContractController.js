@@ -8,13 +8,14 @@ class ContractController {
         return response.status(200).json({contracts})
 
     }
-    async store({ auth, jwt, request, response }) {
+    async store({ auth, session, request, response }) {
         const data = request.only([
           "hired_id",
           "contract",
           "object",
           "value_monthly",
           "finish_date",
+          "start_date",
           "value_global",
           "modality",
           "supervisor",
@@ -27,6 +28,7 @@ class ContractController {
           contract: "required",
           object: "required",
           value_monthly: "required",
+          start_date: "required",
           finish_date: "required",
           value_global: "required",
           modality: "required",
@@ -36,7 +38,7 @@ class ContractController {
         });
     
         if (validation.fails()) {
-          jwt.withErrors(validation.messages()).flashAll();
+          session.withErrors(validation.messages()).flashAll();
     
           return response.redirect("back");
         }
@@ -48,9 +50,10 @@ class ContractController {
          * ref: http://adonisjs.com/docs/4.1/lucid#_create
          */
         const currentUser = await auth.getUser();
-        await currentUser.contracts().create(data);
+      const contract = await currentUser.contracts().create(data);
     
-        return response.redirect("/");
+        return response.status(200).send(contract);
+        // redirect("/");
     }
 
     async edit({ params, request, response, view }) {

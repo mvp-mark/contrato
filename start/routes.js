@@ -22,3 +22,7 @@ Route.on('/').render('welcome')
 
 Route.post('/cadastrar', 'AuthController.cadastrar');
 Route.post('/login', 'AuthController.login');
+
+Route.post('/api/v1/contract', 'ContractController.store');
+Route.get('/table', 'ContractController.index');
+Route.post('/api/v1/company', 'CompanyController.store');
